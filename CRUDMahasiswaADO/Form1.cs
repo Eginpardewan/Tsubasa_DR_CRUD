@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CRUDMahasiswaADO
@@ -14,18 +8,38 @@ namespace CRUDMahasiswaADO
     public partial class Form1 : Form
     {
         private readonly SqlConnection conn;
-        private readonly string connetionString =
+        private readonly string connectionString =
             "Data Source=DESKTOP-RAM20FI\\APRILIYA;Initial Catalog=DBAkademikADO;Integrated Security=True";
         public Form1()
         {
             InitializeComponent();
-            conn = new SqlConnection(connetionString);
+            conn = new SqlConnection(connectionString);
+            cmbJK.Items.Add("L");
+            cmbJK.Items.Add("P");
         }
 
-
-        private void label1_Click(object sender, EventArgs e)
+        // ========== Method Koneksi Database ==========
+        private void ConnectDatabase()
         {
-
+            try
+            {
+                if (conn.State == ConnectionState.Closed)
+                {
+                    conn.Open();
+                }
+                MessageBox.Show("Koneksi berhasil");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Koneksi gagal: " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
         }
     }
 }
