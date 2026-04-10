@@ -35,11 +35,11 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.textNama = new System.Windows.Forms.TextBox();
+            this.txtNama = new System.Windows.Forms.TextBox();
             this.dtpTanggalLahir = new System.Windows.Forms.DateTimePicker();
-            this.textAlamat = new System.Windows.Forms.TextBox();
+            this.txtAlamat = new System.Windows.Forms.TextBox();
             this.cmbJK = new System.Windows.Forms.ComboBox();
-            this.textKodeProdi = new System.Windows.Forms.TextBox();
+            this.txtKodeProdi = new System.Windows.Forms.TextBox();
             this.btnConnect = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -113,10 +113,10 @@
             // 
             // textNama
             // 
-            this.textNama.Location = new System.Drawing.Point(139, 103);
-            this.textNama.Name = "textNama";
-            this.textNama.Size = new System.Drawing.Size(212, 22);
-            this.textNama.TabIndex = 7;
+            this.txtNama.Location = new System.Drawing.Point(139, 103);
+            this.txtNama.Name = "textNama";
+            this.txtNama.Size = new System.Drawing.Size(212, 22);
+            this.txtNama.TabIndex = 7;
             // 
             // dtpTanggalLahir
             // 
@@ -127,10 +127,10 @@
             // 
             // textAlamat
             // 
-            this.textAlamat.Location = new System.Drawing.Point(139, 235);
-            this.textAlamat.Name = "textAlamat";
-            this.textAlamat.Size = new System.Drawing.Size(184, 22);
-            this.textAlamat.TabIndex = 9;
+            this.txtAlamat.Location = new System.Drawing.Point(139, 235);
+            this.txtAlamat.Name = "textAlamat";
+            this.txtAlamat.Size = new System.Drawing.Size(184, 22);
+            this.txtAlamat.TabIndex = 9;
             // 
             // cmbJK
             // 
@@ -142,10 +142,10 @@
             // 
             // textKodeProdi
             // 
-            this.textKodeProdi.Location = new System.Drawing.Point(139, 274);
-            this.textKodeProdi.Name = "textKodeProdi";
-            this.textKodeProdi.Size = new System.Drawing.Size(100, 22);
-            this.textKodeProdi.TabIndex = 11;
+            this.txtKodeProdi.Location = new System.Drawing.Point(139, 274);
+            this.txtKodeProdi.Name = "textKodeProdi";
+            this.txtKodeProdi.Size = new System.Drawing.Size(100, 22);
+            this.txtKodeProdi.TabIndex = 11;
             // 
             // btnConnect
             // 
@@ -213,11 +213,11 @@
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.btnConnect);
-            this.Controls.Add(this.textKodeProdi);
+            this.Controls.Add(this.txtKodeProdi);
             this.Controls.Add(this.cmbJK);
-            this.Controls.Add(this.textAlamat);
+            this.Controls.Add(this.txtAlamat);
             this.Controls.Add(this.dtpTanggalLahir);
-            this.Controls.Add(this.textNama);
+            this.Controls.Add(this.txtNama);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label5);
@@ -242,11 +242,11 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textNama;
+        private System.Windows.Forms.TextBox txtNama;
         private System.Windows.Forms.DateTimePicker dtpTanggalLahir;
-        private System.Windows.Forms.TextBox textAlamat;
+        private System.Windows.Forms.TextBox txtAlamat;
         private System.Windows.Forms.ComboBox cmbJK;
-        private System.Windows.Forms.TextBox textKodeProdi;
+        private System.Windows.Forms.TextBox txtKodeProdi;
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.DataGridView dataGridView1;
