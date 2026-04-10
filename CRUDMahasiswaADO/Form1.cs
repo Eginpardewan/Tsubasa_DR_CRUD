@@ -156,6 +156,71 @@ namespace CRUDMahasiswaADO
             }
         }
 
+        // ========== Event Tombol Mengubah Data (btnLoad2) ==========
+        private void btnLoad2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(txtNIM.Text))
+                {
+                    MessageBox.Show("Pilih data yang akan diupdate");
+                    return;
+                }
+
+                conn.Open();
+
+                string query = @"UPDATE Mahasiswa 
+                                SET Nama = @Nama, 
+                                    JenisKelamin = @JK, 
+                                    Tanggallahir = @Tanggallahir, 
+                                    Alamat = @Alamat, 
+                                    KodeProdi = @KodeProdi 
+                                WHERE NIM = @NIM";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@NIM", txtNIM.Text);
+                cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
+                cmd.Parameters.AddWithValue("@JK", cmbJK.Text);
+                cmd.Parameters.AddWithValue("@Tanggallahir", dtpTanggalLahir.Value.Date);
+                cmd.Parameters.AddWithValue("@Alamat", txtAlamat.Text);
+                cmd.Parameters.AddWithValue("@KodeProdi", txtKodeProdi.Text);
+
+                int result = cmd.ExecuteNonQuery();
+
+                if (result > 0)
+                {
+                    MessageBox.Show("Data berhasil diupdate");
+                    ClearForm();
+                    btnLoad.PerformClick();
+                }
+                else
+                {
+                    MessageBox.Show("Data tidak ditemukan");
+                }
+
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Terjadi kesalahan: " + ex.Message);
+            }
+        }
+
         
+
+        // ========== Method Clear Form ==========
+        private void ClearForm()
+        {
+            txtNIM.Clear();
+            txtNama.Clear();
+            cmbJK.SelectedIndex = -1;
+            dtpTanggalLahir.Value = DateTime.Now;
+            txtAlamat.Clear();
+            txtKodeProdi.Clear();
+            txtNIM.Focus();
+        }
+        private void label1_Click(object sender, EventArgs e)
+        {
+        }
     }
 }
