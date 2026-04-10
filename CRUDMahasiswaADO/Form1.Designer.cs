@@ -111,39 +111,39 @@
             this.label6.TabIndex = 6;
             this.label6.Text = "Kode Prodi";
             // 
-            // textNama
+            // txtNama
             // 
             this.txtNama.Location = new System.Drawing.Point(139, 103);
-            this.txtNama.Name = "textNama";
+            this.txtNama.Name = "txtNama";
             this.txtNama.Size = new System.Drawing.Size(212, 22);
             this.txtNama.TabIndex = 7;
             // 
             // dtpTanggalLahir
             // 
-            this.dtpTanggalLahir.Location = new System.Drawing.Point(139, 149);
+            this.dtpTanggalLahir.Location = new System.Drawing.Point(139, 191);
             this.dtpTanggalLahir.Name = "dtpTanggalLahir";
             this.dtpTanggalLahir.Size = new System.Drawing.Size(200, 22);
             this.dtpTanggalLahir.TabIndex = 8;
             // 
-            // textAlamat
+            // txtAlamat
             // 
             this.txtAlamat.Location = new System.Drawing.Point(139, 235);
-            this.txtAlamat.Name = "textAlamat";
+            this.txtAlamat.Name = "txtAlamat";
             this.txtAlamat.Size = new System.Drawing.Size(184, 22);
             this.txtAlamat.TabIndex = 9;
             // 
             // cmbJK
             // 
             this.cmbJK.FormattingEnabled = true;
-            this.cmbJK.Location = new System.Drawing.Point(139, 189);
+            this.cmbJK.Location = new System.Drawing.Point(139, 149);
             this.cmbJK.Name = "cmbJK";
             this.cmbJK.Size = new System.Drawing.Size(121, 24);
             this.cmbJK.TabIndex = 10;
             // 
-            // textKodeProdi
+            // txtKodeProdi
             // 
             this.txtKodeProdi.Location = new System.Drawing.Point(139, 274);
-            this.txtKodeProdi.Name = "textKodeProdi";
+            this.txtKodeProdi.Name = "txtKodeProdi";
             this.txtKodeProdi.Size = new System.Drawing.Size(100, 22);
             this.txtKodeProdi.TabIndex = 11;
             // 
@@ -151,7 +151,7 @@
             // 
             this.btnConnect.Location = new System.Drawing.Point(422, 50);
             this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(128, 23);
+            this.btnConnect.Size = new System.Drawing.Size(196, 23);
             this.btnConnect.TabIndex = 12;
             this.btnConnect.Text = "Membuka Koneksi";
             this.btnConnect.UseVisualStyleBackColor = true;
@@ -160,7 +160,7 @@
             // 
             this.btnLoad.Location = new System.Drawing.Point(422, 103);
             this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(128, 23);
+            this.btnLoad.Size = new System.Drawing.Size(196, 23);
             this.btnLoad.TabIndex = 13;
             this.btnLoad.Text = "Menampilkan Data";
             this.btnLoad.UseVisualStyleBackColor = true;
@@ -177,9 +177,9 @@
             // 
             // btnLoad1
             // 
-            this.btnLoad1.Location = new System.Drawing.Point(422, 151);
+            this.btnLoad1.Location = new System.Drawing.Point(422, 150);
             this.btnLoad1.Name = "btnLoad1";
-            this.btnLoad1.Size = new System.Drawing.Size(128, 23);
+            this.btnLoad1.Size = new System.Drawing.Size(196, 23);
             this.btnLoad1.TabIndex = 15;
             this.btnLoad1.Text = "Menambah Data";
             this.btnLoad1.UseVisualStyleBackColor = true;
@@ -188,7 +188,7 @@
             // 
             this.btnLoad2.Location = new System.Drawing.Point(422, 190);
             this.btnLoad2.Name = "btnLoad2";
-            this.btnLoad2.Size = new System.Drawing.Size(128, 23);
+            this.btnLoad2.Size = new System.Drawing.Size(196, 23);
             this.btnLoad2.TabIndex = 16;
             this.btnLoad2.Text = "Mengubah Data";
             this.btnLoad2.UseVisualStyleBackColor = true;
@@ -197,7 +197,7 @@
             // 
             this.btnLoad3.Location = new System.Drawing.Point(422, 235);
             this.btnLoad3.Name = "btnLoad3";
-            this.btnLoad3.Size = new System.Drawing.Size(128, 23);
+            this.btnLoad3.Size = new System.Drawing.Size(196, 23);
             this.btnLoad3.TabIndex = 17;
             this.btnLoad3.Text = "Menghapus Data";
             this.btnLoad3.UseVisualStyleBackColor = true;

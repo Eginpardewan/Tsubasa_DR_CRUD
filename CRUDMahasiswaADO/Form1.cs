@@ -33,13 +33,6 @@ namespace CRUDMahasiswaADO
             {
                 MessageBox.Show("Koneksi gagal: " + ex.Message);
             }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
         }
 
         // ========== Event Tombol Koneksi ==========
@@ -93,54 +86,65 @@ namespace CRUDMahasiswaADO
         {
             try
             {
+                // Buka koneksi jika tertutup
+                if (conn.State == ConnectionState.Closed)
+                {
+                    conn.Open();
+                }
+
                 // Validasi input
-                if (string.IsNullOrEmpty(txtNIM.Text))
+                if (txtNIM.Text == "")
                 {
                     MessageBox.Show("NIM harus diisi");
                     txtNIM.Focus();
                     return;
                 }
-                if (string.IsNullOrEmpty(txtNama.Text))
+
+                if (txtNama.Text == "")
                 {
                     MessageBox.Show("Nama harus diisi");
                     txtNama.Focus();
                     return;
                 }
-                if (string.IsNullOrEmpty(cmbJK.Text))
+
+                if (cmbJK.Text == "")
                 {
                     MessageBox.Show("Jenis Kelamin harus dipilih");
                     cmbJK.Focus();
                     return;
                 }
-                if (string.IsNullOrEmpty(txtKodeProdi.Text))
+
+                if (txtKodeProdi.Text == "")
                 {
                     MessageBox.Show("Kode Prodi harus diisi");
                     txtKodeProdi.Focus();
                     return;
                 }
 
-                conn.Open();
-
+                // Query INSERT (perhatikan: TanggalLahir, bukan Tanggallahir - sesuaikan dengan nama kolom di tabel)
                 string query = @"INSERT INTO Mahasiswa 
-                                (NIM, Nama, JenisKelamin, Tanggallahir, Alamat, KodeProdi, TanggalDaftar) 
-                                VALUES 
-                                (@NIM, @Nama, @JK, @Tanggallahir, @Alamat, @KodeProdi, @TanggalDaftar)";
+                        (NIM, Nama, JenisKelamin, TanggalLahir, Alamat, KodeProdi, TanggalDaftar) 
+                        VALUES 
+                        (@NIM, @Nama, @JK, @TanggalLahir, @Alamat, @KodeProdi, @TanggalDaftar)";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
+
+                // Tambahkan parameter
                 cmd.Parameters.AddWithValue("@NIM", txtNIM.Text);
                 cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
                 cmd.Parameters.AddWithValue("@JK", cmbJK.Text);
-                cmd.Parameters.AddWithValue("@Tanggallahir", dtpTanggalLahir.Value.Date);
+                cmd.Parameters.AddWithValue("@TanggalLahir", dtpTanggalLahir.Value.Date);
                 cmd.Parameters.AddWithValue("@Alamat", txtAlamat.Text);
                 cmd.Parameters.AddWithValue("@KodeProdi", txtKodeProdi.Text);
                 cmd.Parameters.AddWithValue("@TanggalDaftar", DateTime.Now);
 
+                // Eksekusi query
                 int result = cmd.ExecuteNonQuery();
 
                 if (result > 0)
                 {
                     MessageBox.Show("Data mahasiswa berhasil ditambahkan");
-                    ClearForm();
+                    ClearForm();           // Kosongkan form
                     btnLoad.PerformClick(); // Refresh DataGridView
                 }
                 else
@@ -148,11 +152,17 @@ namespace CRUDMahasiswaADO
                     MessageBox.Show("Data gagal ditambahkan");
                 }
 
+                // Tutup koneksi
                 conn.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Terjadi kesalahan: " + ex.Message);
+                // Tutup koneksi jika terjadi error
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
             }
         }
 
