@@ -33,7 +33,7 @@ namespace CRUDMahasiswaADO
             this.dtpTanggalLahir = new System.Windows.Forms.DateTimePicker();
             this.txtAlamat = new System.Windows.Forms.TextBox();
             this.cmbJK = new System.Windows.Forms.ComboBox();
-            this.txtNamaProdi = new System.Windows.Forms.TextBox();
+            this.cmbNamaProdi = new System.Windows.Forms.ComboBox();
             this.btnConnect = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -181,13 +181,14 @@ namespace CRUDMahasiswaADO
             this.cmbJK.Size = new System.Drawing.Size(80, 31);
             this.cmbJK.TabIndex = 10;
             // 
-            // txtNamaProdi
+            // cmbNamaProdi
             // 
-            this.txtNamaProdi.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtNamaProdi.Location = new System.Drawing.Point(140, 250);
-            this.txtNamaProdi.Name = "txtNamaProdi";
-            this.txtNamaProdi.Size = new System.Drawing.Size(200, 30);
-            this.txtNamaProdi.TabIndex = 11;
+            this.cmbNamaProdi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbNamaProdi.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbNamaProdi.Location = new System.Drawing.Point(140, 250);
+            this.cmbNamaProdi.Name = "cmbNamaProdi";
+            this.cmbNamaProdi.Size = new System.Drawing.Size(200, 31);
+            this.cmbNamaProdi.TabIndex = 11;
             // 
             // btnConnect
             // 
@@ -329,7 +330,7 @@ namespace CRUDMahasiswaADO
             this.bindingNavigator1.Size = new System.Drawing.Size(800, 31);
             this.bindingNavigator1.TabIndex = 21;
             this.bindingNavigator1.Text = "bindingNavigator1";
-            this.bindingNavigator1.Visible = false;
+            this.bindingNavigator1.Visible = true;
             // 
             // bindingNavigatorAddNewItem
             // 
@@ -357,13 +358,17 @@ namespace CRUDMahasiswaADO
             // 
             // bindingNavigatorMoveFirstItem
             // 
+            this.bindingNavigatorMoveFirstItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMoveFirstItem.Text = "<<";
             // 
             // bindingNavigatorMovePreviousItem
             // 
+            this.bindingNavigatorMovePreviousItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
             this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMovePreviousItem.Text = "<";
             // 
             // bindingNavigatorSeparator
             // 
@@ -384,13 +389,17 @@ namespace CRUDMahasiswaADO
             // 
             // bindingNavigatorMoveNextItem
             // 
+            this.bindingNavigatorMoveNextItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
             this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMoveNextItem.Text = ">";
             // 
             // bindingNavigatorMoveLastItem
             // 
+            this.bindingNavigatorMoveLastItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
             this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMoveLastItem.Text = ">>";
             // 
             // bindingNavigatorSeparator2
             // 
@@ -473,7 +482,7 @@ namespace CRUDMahasiswaADO
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.btnConnect);
-            this.Controls.Add(this.txtNamaProdi);
+            this.Controls.Add(this.cmbNamaProdi);
             this.Controls.Add(this.cmbJK);
             this.Controls.Add(this.txtAlamat);
             this.Controls.Add(this.dtpTanggalLahir);
@@ -491,7 +500,7 @@ namespace CRUDMahasiswaADO
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "CRUD Mahasiswa - ADO.NET";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.mahasiswaBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dBakademikADODataSet)).EndInit();
@@ -501,7 +510,6 @@ namespace CRUDMahasiswaADO
             this.bindingNavigator1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         // Deklarasi komponen
@@ -516,7 +524,7 @@ namespace CRUDMahasiswaADO
         private System.Windows.Forms.DateTimePicker dtpTanggalLahir;
         private System.Windows.Forms.TextBox txtAlamat;
         private System.Windows.Forms.ComboBox cmbJK;
-        private System.Windows.Forms.TextBox txtNamaProdi;
+        private System.Windows.Forms.ComboBox cmbNamaProdi;
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.DataGridView dataGridView1;
