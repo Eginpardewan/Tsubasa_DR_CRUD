@@ -1,6 +1,10 @@
-﻿using System;
+﻿using ExcelDataReader;
+using System;
 using System.Data;
+using ExcelDataReader;
 using System.Data.SqlClient;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace CRUDMahasiswaADO
@@ -86,7 +90,6 @@ namespace CRUDMahasiswaADO
                         cmbNamaProdi.Items.Clear();
                         while (reader.Read())
                         {
-                            string kode = reader["KodeProdi"].ToString();
                             string nama = reader["NamaProdi"].ToString();
                             cmbNamaProdi.Items.Add(nama);
                         }
@@ -307,7 +310,7 @@ namespace CRUDMahasiswaADO
                 cmd.Parameters.AddWithValue("@pJenisKelamin", cmbJK.Text);
                 cmd.Parameters.AddWithValue("@pTanggalLahir", dtpTanggalLahir.Value.Date);
                 cmd.Parameters.AddWithValue("@pKodeProdi", kodeProdi);
-                cmd.Parameters.AddWithValue("@pFoto", DBNull.Value);
+                cmd.Parameters.AddWithValue("@pFoto", pbFoto.Image != null ? ImageToByteArray(pbFoto.Image) : (object)DBNull.Value);
                 cmd.ExecuteNonQuery();
 
                 // 2. Insert ke LogAktivitasSalah (logging)
@@ -377,7 +380,8 @@ namespace CRUDMahasiswaADO
                                 JenisKelamin = @JenisKelamin,
                                 Tanggallahir = @TanggalLahir,
                                 Alamat = @Alamat,
-                                KodeProdi = @KodeProdi
+                                KodeProdi = @KodeProdi,
+                                Foto = @Foto
                             WHERE NIM = @NIM";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -388,6 +392,7 @@ namespace CRUDMahasiswaADO
                             cmd.Parameters.AddWithValue("@TanggalLahir", dtpTanggalLahir.Value.Date);
                             cmd.Parameters.AddWithValue("@Alamat", txtAlamat.Text.Trim());
                             cmd.Parameters.AddWithValue("@KodeProdi", kodeProdi);
+                            cmd.Parameters.AddWithValue("@Foto", pbFoto.Image != null ? ImageToByteArray(pbFoto.Image) : (object)DBNull.Value);
 
                             conn.Open();
                             int rowsAffected = cmd.ExecuteNonQuery();
@@ -532,6 +537,17 @@ namespace CRUDMahasiswaADO
                     cmbNamaProdi.Text = prodiValue;
                 }
 
+                // Tampilkan foto jika ada
+                if (row.Cells["Foto"].Value != DBNull.Value)
+                {
+                    byte[] foto = (byte[])row.Cells["Foto"].Value;
+                    pbFoto.Image = ByteArrayToImage(foto);
+                }
+                else
+                {
+                    pbFoto.Image = null;
+                }
+
                 lblStatus.Text = $"📌 Terpilih: {txtNama.Text} ({txtNIM.Text}) - Prodi: {prodiValue}";
                 lblStatus.ForeColor = System.Drawing.Color.Blue;
             }
@@ -545,6 +561,7 @@ namespace CRUDMahasiswaADO
             cmbJK.SelectedIndex = -1;
             dtpTanggalLahir.Value = DateTime.Now;
             txtAlamat.Clear();
+            pbFoto.Image = null;
             if (cmbNamaProdi.Items.Count > 0)
                 cmbNamaProdi.SelectedIndex = 0;
             else
@@ -672,6 +689,193 @@ namespace CRUDMahasiswaADO
             FormDashboard frmDashboard = new FormDashboard();
             frmDashboard.Show();
             this.Hide();
+        }
+
+        // ========== TOMBOL REKAP DATA ==========
+        private void btnRekapData_Click(object sender, EventArgs e)
+        {
+            Form3 frmRekap = new Form3();
+            frmRekap.Show();
+            this.Hide();
+        }
+
+        // ========== TOMBOL CARI ==========
+        private void btnCari_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtNIM.Text))
+            {
+                MessageBox.Show("Masukkan NIM yang akan dicari!", "Peringatan",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNIM.Focus();
+                return;
+            }
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("sp_GetMahasiswaByNIM", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@pNIM", txtNIM.Text.Trim());
+
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+
+                        if (dt.Rows.Count > 0)
+                        {
+                            DataRow row = dt.Rows[0];
+                            txtNama.Text = row["Nama"].ToString();
+                            cmbJK.Text = row["JenisKelamin"].ToString();
+                            dtpTanggalLahir.Value = Convert.ToDateTime(row["TanggalLahir"]);
+                            txtAlamat.Text = row["Alamat"].ToString();
+                            cmbNamaProdi.Text = row["NamaProdi"].ToString();
+
+                            if (row["Foto"] != DBNull.Value)
+                            {
+                                byte[] foto = (byte[])row["Foto"];
+                                pbFoto.Image = ByteArrayToImage(foto);
+                            }
+                            else
+                            {
+                                pbFoto.Image = null;
+                            }
+
+                            lblStatus.Text = $"🔍 Data ditemukan: {txtNama.Text}";
+                            lblStatus.ForeColor = System.Drawing.Color.Green;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Data tidak ditemukan!", "Informasi",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            ClearForm();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ========== TOMBOL UPLOAD GAMBAR ==========
+        private void btnUploadGambar_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    pbFoto.Image = Image.FromFile(openFileDialog.FileName);
+                    lblStatus.Text = "📷 Gambar berhasil diupload!";
+                    lblStatus.ForeColor = System.Drawing.Color.Green;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal upload gambar: " + ex.Message, "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        // ========== TOMBOL IMPORT EXCEL ==========
+        private void btnImportExcel_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Excel Files|*.xlsx;*.xls";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    // Import Excel menggunakan ExcelDataReader
+                    // Pastikan sudah install NuGet: ExcelDataReader, ExcelDataReader.DataSet
+                    using (var stream = File.Open(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        using (var reader = ExcelReaderFactory.CreateReader(stream))
+                        {
+                            var result = reader.AsDataSet();
+                            DataTable dtExcel = result.Tables[0];
+
+                            int count = 0;
+                            using (SqlConnection conn = new SqlConnection(connectionString))
+                            {
+                                conn.Open();
+                                foreach (DataRow row in dtExcel.Rows)
+                                {
+                                    try
+                                    {
+                                        string nim = row[0].ToString();
+                                        string nama = row[1].ToString();
+                                        string jk = row[2].ToString();
+                                        DateTime tglLahir = Convert.ToDateTime(row[3]);
+                                        string alamat = row[4].ToString();
+                                        string namaProdi = row[5].ToString();
+                                        string kodeProdi = GetKodeProdi(namaProdi);
+
+                                        if (string.IsNullOrEmpty(kodeProdi))
+                                        {
+                                            continue;
+                                        }
+
+                                        string query = @"
+                                            INSERT INTO Mahasiswa (NIM, Nama, JenisKelamin, Tanggallahir, Alamat, KodeProdi, TanggallDaftar)
+                                            VALUES (@NIM, @Nama, @JK, @TglLahir, @Alamat, @KodeProdi, GETDATE())";
+
+                                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                                        {
+                                            cmd.Parameters.AddWithValue("@NIM", nim);
+                                            cmd.Parameters.AddWithValue("@Nama", nama);
+                                            cmd.Parameters.AddWithValue("@JK", jk);
+                                            cmd.Parameters.AddWithValue("@TglLahir", tglLahir);
+                                            cmd.Parameters.AddWithValue("@Alamat", alamat);
+                                            cmd.Parameters.AddWithValue("@KodeProdi", kodeProdi);
+                                            cmd.ExecuteNonQuery();
+                                            count++;
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        SimpanLog("Import Excel Error: " + ex.Message);
+                                    }
+                                }
+                            }
+                            MessageBox.Show($"✅ Berhasil import {count} data dari Excel!", "Sukses",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LoadData();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal import Excel: " + ex.Message, "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        // ========== HELPER: IMAGE TO BYTE ARRAY ==========
+        private byte[] ImageToByteArray(Image image)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                return ms.ToArray();
+            }
+        }
+
+        // ========== HELPER: BYTE ARRAY TO IMAGE ==========
+        private Image ByteArrayToImage(byte[] byteArray)
+        {
+            using (MemoryStream ms = new MemoryStream(byteArray))
+            {
+                return Image.FromStream(ms);
+            }
         }
 
         // ========== FORM LOAD ==========
