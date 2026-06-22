@@ -30,6 +30,7 @@ namespace CRUDMahasiswaADO
             if (cmbTahun.Items.Count > 0)
                 cmbTahun.SelectedIndex = cmbTahun.Items.Count - 1;
 
+            // ========== ISI COMBOBOX TIPE ==========
             cmbTipe.DropDownStyle = ComboBoxStyle.DropDownList;
             var items = new List<KeyValuePair<string, SeriesChartType>>
             {
@@ -69,7 +70,7 @@ namespace CRUDMahasiswaADO
                     string tahun = cmbTahun.SelectedItem?.ToString();
                     if (!string.IsNullOrEmpty(tahun))
                     {
-                        dt = dbLogic.GetDataChartByTahun(Convert.ToInt32(tahun));  // ← PERBAIKI INI
+                        dt = dbLogic.GetDataChartByTahun(Convert.ToInt32(tahun));
                     }
                     else
                     {
@@ -81,7 +82,6 @@ namespace CRUDMahasiswaADO
                     dt = dbLogic.GetAllDataChart();
                 }
 
-                // Jika tidak ada data, keluar dari method
                 if (dt == null || dt.Rows.Count == 0)
                 {
                     MessageBox.Show("Tidak ada data untuk ditampilkan.", "Informasi",
@@ -105,28 +105,44 @@ namespace CRUDMahasiswaADO
                 }
 
                 chartProdi.Series.Add(s);
+
+                // Tambahkan judul chart
+                string judul = "Jumlah Mahasiswa per Program Studi";
+                if (button == 1 && cmbTahun.SelectedItem != null)
+                {
+                    judul = "Jumlah Mahasiswa per Program Studi (Tahun " + cmbTahun.SelectedItem.ToString() + ")";
+                }
+                Title title = new Title(judul, Docking.Top, new Font("Arial", 14, FontStyle.Bold), Color.DarkBlue);
+                chartProdi.Titles.Add(title);
+
+                Legend legend = new Legend("MainLegend");
+                legend.Docking = Docking.Right;
+                chartProdi.Legends.Add(legend);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Gagal load data: " + ex.Message);
             }
-
-            Title title = new Title("Jumlah Mahasiswa per Program Studi", Docking.Top, new Font("Arial", 14, FontStyle.Bold), Color.DarkBlue);
-            chartProdi.Titles.Add(title);
-
-            Legend legend = new Legend("MainLegend");
-            legend.Docking = Docking.Right;
-            chartProdi.Legends.Add(legend);
         }
 
+        // ========== 11. EVENT SelectedValueChanged PADA cmbTipe ==========
         private void cmbTipe_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!isInitializing)
+            if (isInitializing)
+                return;
+
+            if (button == 1)
+            {
+                // Jika button == 1, tetap load berdasarkan tahun
+                LoadDataChart();
+            }
+            else
             {
                 LoadDataChart();
             }
         }
 
+        // ========== 12a. EVENT CLICK BUTTON LOAD ==========
         private void btnLoad_Click(object sender, EventArgs e)
         {
             if (cmbTahun.SelectedItem == null)
@@ -139,12 +155,14 @@ namespace CRUDMahasiswaADO
             LoadDataChart();
         }
 
+        // ========== 12b. EVENT CLICK BUTTON RESET ==========
         private void btnReset_Click(object sender, EventArgs e)
         {
             button = 0;
             LoadDataChart();
         }
 
+        // ========== 12c. EVENT CLICK BUTTON DATA MAHASISWA ==========
         private void btnDataMahasiswa_Click(object sender, EventArgs e)
         {
             Form1 form1 = new Form1();
