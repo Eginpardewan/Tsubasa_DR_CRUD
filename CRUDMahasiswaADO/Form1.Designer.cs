@@ -41,6 +41,11 @@ namespace CRUDMahasiswaADO
             this.btnUpdate = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnDashboard = new System.Windows.Forms.Button();
+            this.btnRekapData = new System.Windows.Forms.Button();
+            this.btnCari = new System.Windows.Forms.Button();
+            this.btnUploadGambar = new System.Windows.Forms.Button();
+            this.pbFoto = new System.Windows.Forms.PictureBox();
+            this.btnImportExcel = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblTotal = new System.Windows.Forms.Label();
             this.mahasiswaTableAdapter = new CRUDMahasiswaADO.DBakademikADODataSetTableAdapters.MahasiswaTableAdapter();
@@ -63,6 +68,7 @@ namespace CRUDMahasiswaADO
             ((System.ComponentModel.ISupportInitialize)(this.mahasiswaBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dBakademikADODataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbFoto)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
             this.SuspendLayout();
@@ -167,7 +173,7 @@ namespace CRUDMahasiswaADO
             this.txtAlamat.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtAlamat.Location = new System.Drawing.Point(140, 210);
             this.txtAlamat.Name = "txtAlamat";
-            this.txtAlamat.Size = new System.Drawing.Size(307, 30);
+            this.txtAlamat.Size = new System.Drawing.Size(200, 30);
             this.txtAlamat.TabIndex = 9;
             // 
             // cmbJK
@@ -198,7 +204,7 @@ namespace CRUDMahasiswaADO
             this.btnConnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnConnect.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnConnect.ForeColor = System.Drawing.Color.White;
-            this.btnConnect.Location = new System.Drawing.Point(480, 50);
+            this.btnConnect.Location = new System.Drawing.Point(542, 49);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(120, 30);
             this.btnConnect.TabIndex = 12;
@@ -213,7 +219,7 @@ namespace CRUDMahasiswaADO
             this.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLoad.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnLoad.ForeColor = System.Drawing.Color.White;
-            this.btnLoad.Location = new System.Drawing.Point(480, 194);
+            this.btnLoad.Location = new System.Drawing.Point(542, 194);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(120, 30);
             this.btnLoad.TabIndex = 13;
@@ -226,10 +232,10 @@ namespace CRUDMahasiswaADO
             this.dataGridView1.BackgroundColor = System.Drawing.Color.White;
             this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridView1.ColumnHeadersHeight = 29;
-            this.dataGridView1.Location = new System.Drawing.Point(30, 300);
+            this.dataGridView1.Location = new System.Drawing.Point(34, 316);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.Size = new System.Drawing.Size(740, 200);
+            this.dataGridView1.Size = new System.Drawing.Size(740, 184);
             this.dataGridView1.TabIndex = 14;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             // 
@@ -240,7 +246,7 @@ namespace CRUDMahasiswaADO
             this.btnInsert.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnInsert.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnInsert.ForeColor = System.Drawing.Color.White;
-            this.btnInsert.Location = new System.Drawing.Point(480, 86);
+            this.btnInsert.Location = new System.Drawing.Point(542, 85);
             this.btnInsert.Name = "btnInsert";
             this.btnInsert.Size = new System.Drawing.Size(120, 30);
             this.btnInsert.TabIndex = 15;
@@ -255,7 +261,7 @@ namespace CRUDMahasiswaADO
             this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUpdate.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnUpdate.ForeColor = System.Drawing.Color.White;
-            this.btnUpdate.Location = new System.Drawing.Point(480, 122);
+            this.btnUpdate.Location = new System.Drawing.Point(542, 121);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(120, 30);
             this.btnUpdate.TabIndex = 16;
@@ -270,7 +276,7 @@ namespace CRUDMahasiswaADO
             this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDelete.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(480, 158);
+            this.btnDelete.Location = new System.Drawing.Point(542, 158);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(120, 30);
             this.btnDelete.TabIndex = 17;
@@ -285,13 +291,84 @@ namespace CRUDMahasiswaADO
             this.btnDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnDashboard.ForeColor = System.Drawing.Color.White;
-            this.btnDashboard.Location = new System.Drawing.Point(620, 86);
+            this.btnDashboard.Location = new System.Drawing.Point(688, 50);
             this.btnDashboard.Name = "btnDashboard";
             this.btnDashboard.Size = new System.Drawing.Size(100, 30);
             this.btnDashboard.TabIndex = 27;
             this.btnDashboard.Text = "Dashboard";
             this.btnDashboard.UseVisualStyleBackColor = false;
             this.btnDashboard.Click += new System.EventHandler(this.btnDashboard_Click);
+            // 
+            // btnRekapData
+            // 
+            this.btnRekapData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(73)))), ((int)(((byte)(94)))));
+            this.btnRekapData.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRekapData.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRekapData.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnRekapData.ForeColor = System.Drawing.Color.White;
+            this.btnRekapData.Location = new System.Drawing.Point(688, 85);
+            this.btnRekapData.Name = "btnRekapData";
+            this.btnRekapData.Size = new System.Drawing.Size(100, 30);
+            this.btnRekapData.TabIndex = 28;
+            this.btnRekapData.Text = "Rekap Data";
+            this.btnRekapData.UseVisualStyleBackColor = false;
+            this.btnRekapData.Click += new System.EventHandler(this.btnRekapData_Click);
+            // 
+            // btnCari
+            // 
+            this.btnCari.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(196)))), ((int)(((byte)(15)))));
+            this.btnCari.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCari.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCari.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnCari.ForeColor = System.Drawing.Color.White;
+            this.btnCari.Location = new System.Drawing.Point(330, 50);
+            this.btnCari.Name = "btnCari";
+            this.btnCari.Size = new System.Drawing.Size(80, 30);
+            this.btnCari.TabIndex = 29;
+            this.btnCari.Text = "Cari";
+            this.btnCari.UseVisualStyleBackColor = false;
+            this.btnCari.Click += new System.EventHandler(this.btnCari_Click);
+            // 
+            // btnUploadGambar
+            // 
+            this.btnUploadGambar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(89)))), ((int)(((byte)(182)))));
+            this.btnUploadGambar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnUploadGambar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUploadGambar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnUploadGambar.ForeColor = System.Drawing.Color.White;
+            this.btnUploadGambar.Location = new System.Drawing.Point(365, 266);
+            this.btnUploadGambar.Name = "btnUploadGambar";
+            this.btnUploadGambar.Size = new System.Drawing.Size(150, 30);
+            this.btnUploadGambar.TabIndex = 30;
+            this.btnUploadGambar.Text = "Upload Gambar";
+            this.btnUploadGambar.UseVisualStyleBackColor = false;
+            this.btnUploadGambar.Click += new System.EventHandler(this.btnUploadGambar_Click);
+            // 
+            // pbFoto
+            // 
+            this.pbFoto.BackColor = System.Drawing.Color.White;
+            this.pbFoto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pbFoto.Location = new System.Drawing.Point(389, 149);
+            this.pbFoto.Name = "pbFoto";
+            this.pbFoto.Size = new System.Drawing.Size(100, 111);
+            this.pbFoto.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbFoto.TabIndex = 31;
+            this.pbFoto.TabStop = false;
+            // 
+            // btnImportExcel
+            // 
+            this.btnImportExcel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
+            this.btnImportExcel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnImportExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnImportExcel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnImportExcel.ForeColor = System.Drawing.Color.White;
+            this.btnImportExcel.Location = new System.Drawing.Point(688, 194);
+            this.btnImportExcel.Name = "btnImportExcel";
+            this.btnImportExcel.Size = new System.Drawing.Size(100, 30);
+            this.btnImportExcel.TabIndex = 32;
+            this.btnImportExcel.Text = "Import Excel";
+            this.btnImportExcel.UseVisualStyleBackColor = false;
+            this.btnImportExcel.Click += new System.EventHandler(this.btnImportExcel_Click);
             // 
             // lblStatus
             // 
@@ -346,7 +423,6 @@ namespace CRUDMahasiswaADO
             this.bindingNavigator1.Size = new System.Drawing.Size(800, 31);
             this.bindingNavigator1.TabIndex = 21;
             this.bindingNavigator1.Text = "bindingNavigator1";
-            this.bindingNavigator1.Visible = true;
             // 
             // bindingNavigatorAddNewItem
             // 
@@ -376,7 +452,7 @@ namespace CRUDMahasiswaADO
             // 
             this.bindingNavigatorMoveFirstItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(33, 28);
             this.bindingNavigatorMoveFirstItem.Text = "<<";
             // 
             // bindingNavigatorMovePreviousItem
@@ -414,7 +490,7 @@ namespace CRUDMahasiswaADO
             // 
             this.bindingNavigatorMoveLastItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
-            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(33, 28);
             this.bindingNavigatorMoveLastItem.Text = ">>";
             // 
             // bindingNavigatorSeparator2
@@ -429,7 +505,7 @@ namespace CRUDMahasiswaADO
             this.btnResetData.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnResetData.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnResetData.ForeColor = System.Drawing.Color.White;
-            this.btnResetData.Location = new System.Drawing.Point(620, 130);
+            this.btnResetData.Location = new System.Drawing.Point(688, 121);
             this.btnResetData.Name = "btnResetData";
             this.btnResetData.Size = new System.Drawing.Size(100, 30);
             this.btnResetData.TabIndex = 22;
@@ -444,7 +520,7 @@ namespace CRUDMahasiswaADO
             this.btnTestInjection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTestInjection.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnTestInjection.ForeColor = System.Drawing.Color.White;
-            this.btnTestInjection.Location = new System.Drawing.Point(620, 170);
+            this.btnTestInjection.Location = new System.Drawing.Point(688, 158);
             this.btnTestInjection.Name = "btnTestInjection";
             this.btnTestInjection.Size = new System.Drawing.Size(100, 30);
             this.btnTestInjection.TabIndex = 23;
@@ -459,7 +535,7 @@ namespace CRUDMahasiswaADO
             this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnRefresh.ForeColor = System.Drawing.Color.White;
-            this.btnRefresh.Location = new System.Drawing.Point(480, 230);
+            this.btnRefresh.Location = new System.Drawing.Point(542, 230);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(120, 30);
             this.btnRefresh.TabIndex = 25;
@@ -474,7 +550,7 @@ namespace CRUDMahasiswaADO
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnExit.ForeColor = System.Drawing.Color.White;
-            this.btnExit.Location = new System.Drawing.Point(620, 210);
+            this.btnExit.Location = new System.Drawing.Point(688, 230);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(100, 30);
             this.btnExit.TabIndex = 26;
@@ -487,6 +563,11 @@ namespace CRUDMahasiswaADO
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(240)))), ((int)(((byte)(241)))));
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Controls.Add(this.btnImportExcel);
+            this.Controls.Add(this.pbFoto);
+            this.Controls.Add(this.btnUploadGambar);
+            this.Controls.Add(this.btnCari);
+            this.Controls.Add(this.btnRekapData);
             this.Controls.Add(this.btnDashboard);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnRefresh);
@@ -517,16 +598,18 @@ namespace CRUDMahasiswaADO
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "CRUD Mahasiswa - ADO.NET";
+            this.Text = "Data Mahasiswa";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.mahasiswaBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dBakademikADODataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbFoto)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).EndInit();
             this.bindingNavigator1.ResumeLayout(false);
             this.bindingNavigator1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         // Deklarasi komponen
@@ -549,6 +632,11 @@ namespace CRUDMahasiswaADO
         private System.Windows.Forms.Button btnUpdate;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnDashboard;
+        private System.Windows.Forms.Button btnRekapData;
+        private System.Windows.Forms.Button btnCari;
+        private System.Windows.Forms.Button btnUploadGambar;
+        private System.Windows.Forms.PictureBox pbFoto;
+        private System.Windows.Forms.Button btnImportExcel;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Label lblTotal;
         private DBakademikADODataSet dBakademikADODataSet;
