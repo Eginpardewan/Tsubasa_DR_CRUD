@@ -78,7 +78,7 @@ namespace CRUDMahasiswaADO
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    string query = "SELECT NamaProdi FROM ProgramStudi ORDER BY NamaProdi";
+                    string query = "SELECT KodeProdi, NamaProdi FROM ProgramStudi ORDER BY NamaProdi";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         conn.Open();
@@ -86,7 +86,9 @@ namespace CRUDMahasiswaADO
                         cmbNamaProdi.Items.Clear();
                         while (reader.Read())
                         {
-                            cmbNamaProdi.Items.Add(reader["NamaProdi"].ToString());
+                            string kode = reader["KodeProdi"].ToString();
+                            string nama = reader["NamaProdi"].ToString();
+                            cmbNamaProdi.Items.Add(nama);
                         }
                         if (cmbNamaProdi.Items.Count > 0)
                             cmbNamaProdi.SelectedIndex = 0;
@@ -98,6 +100,33 @@ namespace CRUDMahasiswaADO
                 SimpanLog(ex.Message);
                 MessageBox.Show("Gagal memuat daftar prodi: " + ex.Message);
             }
+        }
+
+        // ========== GET KODE PRODI DARI NAMA PRODI ==========
+        private string GetKodeProdi(string namaProdi)
+        {
+            string kode = "";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT KodeProdi FROM ProgramStudi WHERE NamaProdi = @NamaProdi";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@NamaProdi", namaProdi);
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null)
+                            kode = result.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SimpanLog(ex.Message);
+                MessageBox.Show("Error get kode prodi: " + ex.Message);
+            }
+            return kode;
         }
 
         // ========== CONNECT TEST ==========
@@ -227,7 +256,7 @@ namespace CRUDMahasiswaADO
             LoadData();
         }
 
-        // ========== INSERT DENGAN TRANSACTION & SIMULASI ERROR ==========
+        // ========== INSERT ==========
         private void btnInsert_Click(object sender, EventArgs e)
         {
             // Validasi input
@@ -266,16 +295,19 @@ namespace CRUDMahasiswaADO
 
             try
             {
+                // Dapatkan KodeProdi dari NamaProdi yang dipilih
+                string kodeProdi = GetKodeProdi(cmbNamaProdi.SelectedItem.ToString());
+
                 // 1. Insert ke Mahasiswa via Stored Procedure
                 SqlCommand cmd = new SqlCommand("sp_InsertMahasiswa", conn, trans);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@NIM", txtNIM.Text);
-                cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
-                cmd.Parameters.AddWithValue("@JenisKelamin", cmbJK.Text);
-                cmd.Parameters.AddWithValue("@TanggalLahir", dtpTanggalLahir.Value.Date);
-                cmd.Parameters.AddWithValue("@Alamat", txtAlamat.Text);
-                cmd.Parameters.AddWithValue("@NamaProdi", cmbNamaProdi.SelectedItem.ToString());
-                cmd.Parameters.AddWithValue("@TanggalDaftar", DateTime.Now);
+                cmd.Parameters.AddWithValue("@pNIM", txtNIM.Text);
+                cmd.Parameters.AddWithValue("@pNama", txtNama.Text);
+                cmd.Parameters.AddWithValue("@pAlamat", txtAlamat.Text);
+                cmd.Parameters.AddWithValue("@pJenisKelamin", cmbJK.Text);
+                cmd.Parameters.AddWithValue("@pTanggalLahir", dtpTanggalLahir.Value.Date);
+                cmd.Parameters.AddWithValue("@pKodeProdi", kodeProdi);
+                cmd.Parameters.AddWithValue("@pFoto", DBNull.Value);
                 cmd.ExecuteNonQuery();
 
                 // 2. Insert ke LogAktivitasSalah (logging)
@@ -285,9 +317,6 @@ namespace CRUDMahasiswaADO
                 cmdLog.Parameters.AddWithValue("@aktivitas", "INSERT MAHASISWA : " + txtNIM.Text);
                 cmdLog.ExecuteNonQuery();
 
-                throw new Exception("Insert gagal");
-
-                // Jika semua berhasil, commit
                 trans.Commit();
                 MessageBox.Show("Data berhasil ditambahkan", "Sukses",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -341,13 +370,14 @@ namespace CRUDMahasiswaADO
                 {
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
+                        string kodeProdi = GetKodeProdi(cmbNamaProdi.SelectedItem.ToString());
                         string query = @"
                             UPDATE Mahasiswa 
                             SET Nama = @Nama,
                                 JenisKelamin = @JenisKelamin,
                                 Tanggallahir = @TanggalLahir,
                                 Alamat = @Alamat,
-                                KodeProdi = (SELECT KodeProdi FROM ProgramStudi WHERE NamaProdi = @NamaProdi)
+                                KodeProdi = @KodeProdi
                             WHERE NIM = @NIM";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -357,7 +387,7 @@ namespace CRUDMahasiswaADO
                             cmd.Parameters.AddWithValue("@JenisKelamin", cmbJK.Text);
                             cmd.Parameters.AddWithValue("@TanggalLahir", dtpTanggalLahir.Value.Date);
                             cmd.Parameters.AddWithValue("@Alamat", txtAlamat.Text.Trim());
-                            cmd.Parameters.AddWithValue("@NamaProdi", cmbNamaProdi.SelectedItem.ToString());
+                            cmd.Parameters.AddWithValue("@KodeProdi", kodeProdi);
 
                             conn.Open();
                             int rowsAffected = cmd.ExecuteNonQuery();
@@ -415,7 +445,7 @@ namespace CRUDMahasiswaADO
                         using (SqlCommand cmd = new SqlCommand("sp_DeleteMahasiswa", conn))
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddWithValue("@NIM", txtNIM.Text.Trim());
+                            cmd.Parameters.AddWithValue("@pNIM", txtNIM.Text.Trim());
 
                             conn.Open();
                             int rowsAffected = cmd.ExecuteNonQuery();
@@ -634,6 +664,14 @@ namespace CRUDMahasiswaADO
                     btnDelete_Click(sender, e);
                 }
             }
+        }
+
+        // ========== TOMBOL DASHBOARD ==========
+        private void btnDashboard_Click(object sender, EventArgs e)
+        {
+            FormDashboard frmDashboard = new FormDashboard();
+            frmDashboard.Show();
+            this.Hide();
         }
 
         // ========== FORM LOAD ==========
