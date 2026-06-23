@@ -130,7 +130,6 @@ namespace CRUDMahasiswaADO
                 dataGridView1.DataSource = bindingSource;
                 bindingNavigator1.BindingSource = bindingSource;
 
-                // Atur kolom Foto
                 if (dataGridView1.Columns["Foto"] != null)
                 {
                     DataGridViewImageColumn fotoColumn = (DataGridViewImageColumn)dataGridView1.Columns["Foto"];
@@ -148,6 +147,7 @@ namespace CRUDMahasiswaADO
                 btnLoad.Enabled = true;
                 btnResetData.Enabled = true;
                 btnTestInjection.Enabled = true;
+                btnImpDb.Enabled = false;
 
                 lblStatus.Text = $"✅ Berhasil memuat {dt.Rows.Count} data mahasiswa";
                 lblStatus.ForeColor = System.Drawing.Color.Green;
@@ -621,100 +621,185 @@ namespace CRUDMahasiswaADO
             }
         }
 
-        // ========== TOMBOL UPLOAD GAMBAR ==========
+        // ========== 14e. TOMBOL UPLOAD GAMBAR ==========
         private void btnUploadGambar_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
 
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                try
+                pbFoto.Image = Image.FromFile(ofd.FileName);
+                pbFoto.SizeMode = PictureBoxSizeMode.StretchImage;
+            }
+        }
+
+        // ========== 14e. TOMBOL IMPORT EXCEL ==========
+        private void btnImportExcel_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog { Filter = "Excel Workbook|*.xlsx;*.xls" })
+            {
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    pbFoto.Image = Image.FromFile(openFileDialog.FileName);
-                    pbFoto.SizeMode = PictureBoxSizeMode.StretchImage;
-                    lblStatus.Text = "📷 Gambar berhasil diupload!";
-                    lblStatus.ForeColor = System.Drawing.Color.Green;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Gagal upload gambar: " + ex.Message, "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string filePath = openFileDialog.FileName;
+                    using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        using (var reader = ExcelReaderFactory.CreateReader(stream))
+                        {
+                            var result = reader.AsDataSet(new ExcelDataSetConfiguration()
+                            {
+                                ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
+                                {
+                                    UseHeaderRow = true
+                                }
+                            });
+                            DataTable dt = result.Tables[0];
+                            dataGridView1.DataSource = dt;
+                            dataGridView1.Enabled = false;
+                            btnImpDb.Enabled = true;
+                            btnInsert.Enabled = false;
+                            btnUpdate.Enabled = false;
+                            btnDelete.Enabled = false;
+                            btnCari.Enabled = false;
+                            btnLoad.Enabled = false;
+                            btnResetData.Enabled = false;
+                            btnTestInjection.Enabled = false;
+                        }
+                    }
                 }
             }
         }
 
-        // ========== TOMBOL IMPORT EXCEL ==========
-        private void btnImportExcel_Click(object sender, EventArgs e)
+        // ========== 14e. TOMBOL IMPORT KE DATABASE ==========
+        private void btnImpDb_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Excel Files|*.xlsx;*.xls";
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            try
             {
-                try
+                DataTable dt = (DataTable)dataGridView1.DataSource;
+
+                if (dt == null || dt.Rows.Count == 0)
                 {
-                    using (var stream = File.Open(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                    MessageBox.Show("Tidak ada data untuk diimport.", "Peringatan",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int sukses = 0;
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    try
                     {
-                        using (var reader = ExcelReaderFactory.CreateReader(stream))
+                        string nim = row["NIM"].ToString().Trim();
+                        string nama = row["Nama"].ToString().Trim();
+                        string jk = row["JenisKelamin"].ToString().Trim();
+                        string alamat = row["Alamat"].ToString().Trim();
+                        string kodeProdi = row["NamaProdi"].ToString().Trim();
+
+                        if (string.IsNullOrEmpty(nim) || string.IsNullOrEmpty(nama))
+                            continue;
+
+                        DateTime tglLahir;
+                        if (!DateTime.TryParse(row["TanggalLahir"].ToString(), out tglLahir))
+                            continue;
+
+                        string fotoPath = dt.Columns.Contains("FotoPath") ? row["FotoPath"].ToString().Trim() : string.Empty;
+
+                        byte[] fotoBytes = ConvertImageFromPath(fotoPath);
+
+                        // Cek apakah NIM sudah ada
+                        using (SqlConnection conn = new SqlConnection(dbLogic.GetConnectionString()))
                         {
-                            var result = reader.AsDataSet();
-                            DataTable dtExcel = result.Tables[0];
-
-                            int count = 0;
-                            using (SqlConnection conn = new SqlConnection(dbLogic.GetConnectionString()))
+                            conn.Open();
+                            string checkQuery = "SELECT COUNT(*) FROM Mahasiswa WHERE NIM = @NIM";
+                            using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
                             {
-                                conn.Open();
-                                foreach (DataRow row in dtExcel.Rows)
+                                checkCmd.Parameters.AddWithValue("@NIM", nim);
+                                int exists = (int)checkCmd.ExecuteScalar();
+
+                                if (exists > 0)
                                 {
-                                    try
+                                    // Update jika sudah ada
+                                    string updateQuery = @"
+                                        UPDATE Mahasiswa 
+                                        SET Nama = @Nama,
+                                            JenisKelamin = @JK,
+                                            Tanggallahir = @TglLahir,
+                                            Alamat = @Alamat,
+                                            KodeProdi = @KodeProdi,
+                                            Foto = @Foto
+                                        WHERE NIM = @NIM";
+
+                                    using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
                                     {
-                                        string nim = row[0].ToString();
-                                        string nama = row[1].ToString();
-                                        string jk = row[2].ToString();
-                                        DateTime tglLahir = Convert.ToDateTime(row[3]);
-                                        string alamat = row[4].ToString();
-                                        string namaProdi = row[5].ToString();
-                                        string kodeProdi = GetKodeProdi(namaProdi);
-
-                                        if (string.IsNullOrEmpty(kodeProdi))
-                                            continue;
-
-                                        string query = @"
-                                            INSERT INTO Mahasiswa (NIM, Nama, JenisKelamin, Tanggallahir, Alamat, KodeProdi, TanggallDaftar)
-                                            VALUES (@NIM, @Nama, @JK, @TglLahir, @Alamat, @KodeProdi, GETDATE())";
-
-                                        using (SqlCommand cmd = new SqlCommand(query, conn))
-                                        {
-                                            cmd.Parameters.AddWithValue("@NIM", nim);
-                                            cmd.Parameters.AddWithValue("@Nama", nama);
-                                            cmd.Parameters.AddWithValue("@JK", jk);
-                                            cmd.Parameters.AddWithValue("@TglLahir", tglLahir);
-                                            cmd.Parameters.AddWithValue("@Alamat", alamat);
-                                            cmd.Parameters.AddWithValue("@KodeProdi", kodeProdi);
-                                            cmd.ExecuteNonQuery();
-                                            count++;
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        SimpanLog("Import Excel Error: " + ex.Message);
+                                        updateCmd.Parameters.AddWithValue("@NIM", nim);
+                                        updateCmd.Parameters.AddWithValue("@Nama", nama);
+                                        updateCmd.Parameters.AddWithValue("@JK", jk);
+                                        updateCmd.Parameters.AddWithValue("@TglLahir", tglLahir);
+                                        updateCmd.Parameters.AddWithValue("@Alamat", alamat);
+                                        updateCmd.Parameters.AddWithValue("@KodeProdi", kodeProdi);
+                                        updateCmd.Parameters.AddWithValue("@Foto", fotoBytes ?? (object)DBNull.Value);
+                                        updateCmd.ExecuteNonQuery();
                                     }
                                 }
+                                else
+                                {
+                                    // Insert jika belum ada
+                                    string insertQuery = @"
+                                        INSERT INTO Mahasiswa (NIM, Nama, JenisKelamin, Tanggallahir, Alamat, KodeProdi, TanggallDaftar, Foto)
+                                        VALUES (@NIM, @Nama, @JK, @TglLahir, @Alamat, @KodeProdi, GETDATE(), @Foto)";
+
+                                    using (SqlCommand insertCmd = new SqlCommand(insertQuery, conn))
+                                    {
+                                        insertCmd.Parameters.AddWithValue("@NIM", nim);
+                                        insertCmd.Parameters.AddWithValue("@Nama", nama);
+                                        insertCmd.Parameters.AddWithValue("@JK", jk);
+                                        insertCmd.Parameters.AddWithValue("@TglLahir", tglLahir);
+                                        insertCmd.Parameters.AddWithValue("@Alamat", alamat);
+                                        insertCmd.Parameters.AddWithValue("@KodeProdi", kodeProdi);
+                                        insertCmd.Parameters.AddWithValue("@Foto", fotoBytes ?? (object)DBNull.Value);
+                                        insertCmd.ExecuteNonQuery();
+                                    }
+                                }
+                                sukses++;
                             }
-                            MessageBox.Show($"✅ Berhasil import {count} data dari Excel!", "Sukses",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            LoadData();
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        SimpanLog("Import Error: " + ex.Message);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    SimpanLog(ex.Message);
-                    MessageBox.Show("Gagal import Excel: " + ex.Message, "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+
+                MessageBox.Show($"✅ Berhasil mengimport {sukses} data ke database!", "Sukses",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                btnImpDb.Enabled = false;
+                LoadData();
             }
+            catch (SqlException ex)
+            {
+                SimpanLog("Rollback Import : " + ex.Message);
+                MessageBox.Show("SQL Error : " + ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                SimpanLog("General Error : " + ex.Message);
+                MessageBox.Show("General Error : " + ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ========== HELPER: CONVERT IMAGE FROM PATH ==========
+        private byte[] ConvertImageFromPath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return null;
+
+            if (!File.Exists(path))
+                return null;
+
+            return File.ReadAllBytes(path);
         }
 
         // ========== HELPER: IMAGE TO BYTE ARRAY ==========
