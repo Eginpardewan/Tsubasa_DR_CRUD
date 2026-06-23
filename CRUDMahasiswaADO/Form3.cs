@@ -7,7 +7,10 @@ namespace CRUDMahasiswaADO
 {
     public partial class Form3 : Form
     {
-        // ========== KONEKSI DATABASE ==========
+        // ========== 15. DEKLARASI OBJEK DAL ==========
+        DAL dbLogic = new DAL();
+
+        // ========== KONEKSI DATABASE (Opsional jika masih menggunakan conn langsung) ==========
         static string connectionString = "Data Source=LAPTOP-SDC5DOB7\\EGIN;Initial Catalog=DBakademikADO;Integrated Security=True";
         SqlConnection conn = new SqlConnection(connectionString);
         SqlDataAdapter da;
@@ -39,11 +42,8 @@ namespace CRUDMahasiswaADO
                     conn.Open();
                 }
 
-                SqlCommand cmd = new SqlCommand("select NamaProdi from ProgramStudi", conn);
-                cmd.CommandType = CommandType.Text;
-                dtProdi = new DataTable();
-                da = new SqlDataAdapter(cmd);
-                da.Fill(dtProdi);
+                // Gunakan dbLogic untuk mengambil data Prodi
+                DataTable dtProdi = dbLogic.GetProdi();
                 cmbProdi.DataSource = dtProdi;
                 cmbProdi.DisplayMember = "NamaProdi";
                 cmbProdi.ValueMember = "NamaProdi";
@@ -108,7 +108,8 @@ namespace CRUDMahasiswaADO
         // ========== btnCetak_CLICK (Panggil Form2) ==========
         private void btnCetak_Click(object sender, EventArgs e)
         {
-            Form2 frm2 = new Form2(cmbProdi.SelectedValue.ToString(), dtpTanggalMasuk.Value.Year);
+            // Kirim DateTime (bukan int tahun) - sesuai dengan constructor Form2
+            Form2 frm2 = new Form2(cmbProdi.SelectedValue.ToString(), dtpTanggalMasuk.Value);
             frm2.Show();
             this.Hide();
         }
