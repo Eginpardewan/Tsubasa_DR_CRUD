@@ -34,7 +34,6 @@
             this.crystalReportViewer1.Size = new System.Drawing.Size(800, 450);
             this.crystalReportViewer1.TabIndex = 0;
             this.crystalReportViewer1.ToolPanelView = CrystalDecisions.Windows.Forms.ToolPanelViewType.None;
-            this.crystalReportViewer1.Load += new System.EventHandler(this.crystalReportViewer1_Load);
             // 
             // Form2
             // 
@@ -44,9 +43,8 @@
             this.Name = "Form2";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Cetak Data Mahasiswa";
-            this.Load += new System.EventHandler(this.Form2_Load);
+            // HAPUS baris ini: this.Load += new System.EventHandler(this.Form2_Load);
             this.ResumeLayout(false);
-
         }
 
         private CrystalDecisions.Windows.Forms.CrystalReportViewer crystalReportViewer1;
