@@ -46,6 +46,7 @@ namespace CRUDMahasiswaADO
             this.btnUploadGambar = new System.Windows.Forms.Button();
             this.pbFoto = new System.Windows.Forms.PictureBox();
             this.btnImportExcel = new System.Windows.Forms.Button();
+            this.btnImpDb = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblTotal = new System.Windows.Forms.Label();
             this.mahasiswaTableAdapter = new CRUDMahasiswaADO.DBakademikADODataSetTableAdapters.MahasiswaTableAdapter();
@@ -291,7 +292,7 @@ namespace CRUDMahasiswaADO
             this.btnDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnDashboard.ForeColor = System.Drawing.Color.White;
-            this.btnDashboard.Location = new System.Drawing.Point(688, 50);
+            this.btnDashboard.Location = new System.Drawing.Point(688, 49);
             this.btnDashboard.Name = "btnDashboard";
             this.btnDashboard.Size = new System.Drawing.Size(100, 30);
             this.btnDashboard.TabIndex = 27;
@@ -370,6 +371,22 @@ namespace CRUDMahasiswaADO
             this.btnImportExcel.UseVisualStyleBackColor = false;
             this.btnImportExcel.Click += new System.EventHandler(this.btnImportExcel_Click);
             // 
+            // btnImpDb
+            // 
+            this.btnImpDb.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
+            this.btnImpDb.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnImpDb.Enabled = false;
+            this.btnImpDb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnImpDb.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnImpDb.ForeColor = System.Drawing.Color.White;
+            this.btnImpDb.Location = new System.Drawing.Point(688, 230);
+            this.btnImpDb.Name = "btnImpDb";
+            this.btnImpDb.Size = new System.Drawing.Size(100, 30);
+            this.btnImpDb.TabIndex = 33;
+            this.btnImpDb.Text = "Import to DB";
+            this.btnImpDb.UseVisualStyleBackColor = false;
+            this.btnImpDb.Click += new System.EventHandler(this.btnImpDb_Click);
+            // 
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
@@ -423,6 +440,7 @@ namespace CRUDMahasiswaADO
             this.bindingNavigator1.Size = new System.Drawing.Size(800, 31);
             this.bindingNavigator1.TabIndex = 21;
             this.bindingNavigator1.Text = "bindingNavigator1";
+            this.bindingNavigator1.Visible = false;
             // 
             // bindingNavigatorAddNewItem
             // 
@@ -550,7 +568,7 @@ namespace CRUDMahasiswaADO
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnExit.ForeColor = System.Drawing.Color.White;
-            this.btnExit.Location = new System.Drawing.Point(688, 230);
+            this.btnExit.Location = new System.Drawing.Point(688, 266);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(100, 30);
             this.btnExit.TabIndex = 26;
@@ -563,6 +581,7 @@ namespace CRUDMahasiswaADO
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(240)))), ((int)(((byte)(241)))));
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Controls.Add(this.btnImpDb);
             this.Controls.Add(this.btnImportExcel);
             this.Controls.Add(this.pbFoto);
             this.Controls.Add(this.btnUploadGambar);
@@ -609,7 +628,6 @@ namespace CRUDMahasiswaADO
             this.bindingNavigator1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         // Deklarasi komponen
@@ -637,6 +655,7 @@ namespace CRUDMahasiswaADO
         private System.Windows.Forms.Button btnUploadGambar;
         private System.Windows.Forms.PictureBox pbFoto;
         private System.Windows.Forms.Button btnImportExcel;
+        private System.Windows.Forms.Button btnImpDb;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Label lblTotal;
         private DBakademikADODataSet dBakademikADODataSet;
