@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Windows.Forms;
 using CrystalDecisions.CrystalReports.Engine;
 
@@ -9,47 +7,34 @@ namespace CRUDMahasiswaADO
 {
     public partial class Form2 : Form
     {
-        static string connectionString = "Data Source=LAPTOP-SDC5DOB7\\EGIN;Initial Catalog=DBakademikADO;Integrated Security=True";
-        private string prodi;
-        private int tahun;
+        // ========== DEKLARASI OBJEK DAL ==========
+        DAL dbLogic = new DAL();
 
-        public Form2(string prodi, int tahun)
+        private string prodi;
+        private DateTime tglmasuk;
+
+        // ========== 16. UBAH CONSTRUCTOR REPORT ==========
+        public Form2(string Prodi, DateTime TglMasuk)
         {
             InitializeComponent();
-            this.prodi = prodi;
-            this.tahun = tahun;
-        }
+            prodi = Prodi;
+            tglmasuk = TglMasuk;
 
-        private void Form2_Load(object sender, EventArgs e)
-        {
-            List<Data> listData = new List<Data>();  // ← menggunakan class Data
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("sp_Report", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@inProdi", prodi);
-                cmd.Parameters.AddWithValue("@inTgLMsuK", tahun.ToString());
+                DataTable dtMahasiswa = dbLogic.GetDataRekap(prodi, tglmasuk);
 
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    Data data = new Data();
-                    data.Nama = reader["Nama"].ToString();
-                    data.JenisKelamin = reader["JenisKelamin"].ToString();
-                    data.Alamat = reader["Alamat"].ToString();
-                    data.NamaProdi = reader["NamaProdi"].ToString();
-                    data.TanggalDaftar = Convert.ToDateTime(reader["TanggalDaftar"]);
-                    listData.Add(data);
-                }
+                // Gunakan CrystalReport1 (sesuai dengan nama report di project)
+                CrystalReport1 report = new CrystalReport1();
+                report.SetDataSource(dtMahasiswa);
+                crystalReportViewer1.ReportSource = report;
+                crystalReportViewer1.Refresh();
             }
-
-            CrystalReport1 report = new CrystalReport1();
-            report.SetDataSource(listData);
-            crystalReportViewer1.ReportSource = report;
-            crystalReportViewer1.Refresh();
+            catch (Exception ex)
+            {
+                // simpanLog(ex.Message);
+                MessageBox.Show("Gagal load data: " + ex.Message);
+            }
         }
 
         private void crystalReportViewer1_Load(object sender, EventArgs e)
